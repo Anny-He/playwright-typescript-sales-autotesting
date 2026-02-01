@@ -75,6 +75,41 @@ export class ProductsPage extends BasePage {
         // return priceTexts.map(text => parseFloat(text.replace('$', '')));
     }
 
+    /* * Get inventory item infomation by id 
+          @param id - The id of the item to get the name for
+    */
+    async getInventoryItemsInfoById(id: string): Promise<string | null> {
+        const selector = `[data-test="item-name-${id}"]`;
+        const itemNameLocator = this.page.locator(selector);
+        await expect(itemNameLocator).toBeVisible();
+        return await itemNameLocator.textContent();
+    }
+
+    /*  Get item price by id 
+         @param id - The id of the item to get the price for   
+    */
+    async getItemPriceById(id: string): Promise<number | null> {
+        const selector = `[data-test="item-price-${id}"]`;
+        const itemPriceLocator = this.page.locator(selector);
+        await expect(itemPriceLocator).toBeVisible();
+        const priceText = await itemPriceLocator.textContent();
+        if (priceText) {
+            return parseFloat(priceText.replace('$', ''));
+        }
+        return null;
+    }
+
+    /* Get item name by id 
+         @param id - The id of the item to get the name for
+    */
+    async getItemNameById(id: string): Promise<string | null> {
+        const selector = `[data-test="inventory-item-name"]`;
+        const itemNameLocator = this.page.locator(selector).filter({ hasText: id });
+        await expect(itemNameLocator).toBeVisible();
+        return await itemNameLocator.textContent();
+    }
+
+
     /*  AddButton
         @param id - The id of the item to define the add button for 
     */
@@ -97,7 +132,7 @@ export class ProductsPage extends BasePage {
      */
     async addItemById(id: string): Promise<void> {
         const addBtn = await this.addButton(id);
-        await expect(addBtn).toBeVisible();        
+        await expect(addBtn).toBeVisible();
         await addBtn.click();
         await expect(await this.removeButton(id)).toBeVisible();
     }
